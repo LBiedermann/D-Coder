@@ -80,6 +80,9 @@ public:
     void setOutputState(bool outState) {
         LROutputMode = outState;
     }
+    void setSwapState(bool swapState) {
+        LRSwap = swapState;
+    }
     //void setHpfValue(float value) {
 
 
@@ -104,6 +107,8 @@ private:
     bool midSolo = false, sideSolo = false;
 
     bool LRInputMode = true, LROutputMode = true;
+
+    bool LRSwap = false;
 
     float M = 0.f;
     float S = 0.f;

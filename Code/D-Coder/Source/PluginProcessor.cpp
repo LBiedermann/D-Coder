@@ -222,6 +222,7 @@ DCoderAudioProcessor::createParameters()
     parameters.push_back(std::make_unique<juce::AudioParameterBool>("SS", "SideSolo", false));
     parameters.push_back(std::make_unique<juce::AudioParameterBool>("LRIM", "InputMode", true));
     parameters.push_back(std::make_unique<juce::AudioParameterBool>("LROM", "OutputMode", true));
+    parameters.push_back(std::make_unique<juce::AudioParameterBool>("LRS", "LRSWAP", false));
 
     return { parameters.begin(), parameters.end() };
 }
@@ -235,11 +236,13 @@ void DCoderAudioProcessor::updateParameters()
     bool sideBtn = *apvts.getRawParameterValue("SS");
     bool LRInputModeBtn = *apvts.getRawParameterValue("LRIM");
     bool LROutputModeBtn = *apvts.getRawParameterValue("LROM");
+    bool LRSwapBtn = *apvts.getRawParameterValue("LRS");
 
     midSide.setMidState(midBtn);
     midSide.setSideState(sideBtn);
     midSide.setInputState(LRInputModeBtn);
     midSide.setOutputState(LROutputModeBtn);
+    midSide.setSwapState(LRSwapBtn);
 }
 void DCoderAudioProcessor::reset() {
     midSide.reset();

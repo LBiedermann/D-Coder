@@ -41,14 +41,30 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
         //---------------------------------------------------
         if (LRInputMode)
         {
-            L = leftChannel[n];
-            R = rightChannel[n];
+            if (LRSwap)
+            {
+                R = leftChannel[n];
+                L = rightChannel[n];
+            }
+            else
+            {
+                L = leftChannel[n];
+                R = rightChannel[n];
+            }
+
             // LR --> MS
             midSideEncode();
         }
         else {
-            M = leftChannel[n];
-            S = rightChannel[n];
+            if (LRSwap)
+            {
+                M = leftChannel[n];
+                S = rightChannel[n];
+            }
+            else {
+                S = leftChannel[n];
+                M = rightChannel[n];
+            }
         }
 
         //---------------------------------------------------
