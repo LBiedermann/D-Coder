@@ -73,6 +73,13 @@ public:
         sideSolo = sideState;
     }
 
+    void setInputState(bool inState) {
+        LRInputMode = inState;
+    }
+
+    void setOutputState(bool outState) {
+        LROutputMode = outState;
+    }
     //void setHpfValue(float value) {
 
 

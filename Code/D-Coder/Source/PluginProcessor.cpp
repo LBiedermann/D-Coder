@@ -217,6 +217,12 @@ DCoderAudioProcessor::createParameters()
 
     //parameters...
 
+
+    parameters.push_back(std::make_unique<juce::AudioParameterBool>("MS", "MidSolo", false));
+    parameters.push_back(std::make_unique<juce::AudioParameterBool>("SS", "SideSolo", false));
+    parameters.push_back(std::make_unique<juce::AudioParameterBool>("LRIM", "InputMode", true));
+    parameters.push_back(std::make_unique<juce::AudioParameterBool>("LROM", "OutputMode", true));
+
     return { parameters.begin(), parameters.end() };
 }
 
@@ -225,12 +231,15 @@ void DCoderAudioProcessor::updateParameters()
 
     //midSide.setStereowidthValue(apvts.getRawParameterValue("STE"));
     //midSide.updateCutFilter(apvts.getRawParameterValue("HPF"));
-    //bool midBtn = *apvts.getRawParameterValue("MM");
-    //bool sideBtn = *apvts.getRawParameterValue("SM");
+    bool midBtn = *apvts.getRawParameterValue("MS");
+    bool sideBtn = *apvts.getRawParameterValue("SS");
+    bool LRInputModeBtn = *apvts.getRawParameterValue("LRIM");
+    bool LROutputModeBtn = *apvts.getRawParameterValue("LROM");
 
-    //midSide.setMidState(midBtn);
-    //midSide.setSideState(sideBtn);
-
+    midSide.setMidState(midBtn);
+    midSide.setSideState(sideBtn);
+    midSide.setInputState(LRInputModeBtn);
+    midSide.setOutputState(LROutputModeBtn);
 }
 void DCoderAudioProcessor::reset() {
     midSide.reset();
