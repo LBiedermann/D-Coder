@@ -9,11 +9,12 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "lib/MidSide.h"
 
 //==============================================================================
 /**
 */
-class DCoderAudioProcessor  : public juce::AudioProcessor
+class DCoderAudioProcessor  : public juce::AudioProcessor, public juce::ValueTree::Listener
 {
 public:
     //==============================================================================
@@ -53,7 +54,31 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    //==============================================================================
+
+    //void prepare(double sampleRate, int samplesPerBlock); //Pass Sample Rate and Buffer Size to DSP
+    void updateParameters(); //Update DSP when a user changes parameters
+    void reset() override; //Reset DSP parameters
+
+    void userChangedParameter();
+
+    void valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHasChanged, const juce::Identifier& property) override
+    {
+        mustUpdateProcessing = true;
+    }
+    juce::AudioProcessorValueTreeState apvts;
+    juce::AudioProcessorValueTreeState::ParameterLayout createParameters();
+
+    MidSide getMidSide() {
+        return midSide;
+    }
+
 private:
+
+    bool mustUpdateProcessing{ false };
+    bool isActive{ false };
+
+    MidSide midSide;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DCoderAudioProcessor)
 };

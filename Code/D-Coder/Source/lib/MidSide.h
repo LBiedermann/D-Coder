@@ -18,22 +18,11 @@ class MidSide {
 
 public:
 
-    void processStereoWidth(float& L, float& R);
-    void processStereoWidth(float* leftChannel, float* rightChannel, const int N);
     void processStereoWidth(juce::AudioBuffer<float>& buffer);
 
-    void midSideEncode(const float& L, const float& R, float& M, float& S);
-    void midSideDecode(const float& M, const float& S, float& L, float& R);
+    void midSideEncode();
+    void midSideDecode();
 
-    //void setStereowidthValue(std::atomic<float>* newWidth) {
-    //    strVal.setTargetValue(newWidth->load());
-    //    while (strVal.isSmoothing())
-    //    {
-    //        stereoWidth = strVal.getNextValue();
-    //        //DBG(stereoWidth);
-    //    }
-
-    //}
 
     void updateCutFilter(std::atomic<float>* newFrequency) {
 
@@ -77,11 +66,11 @@ public:
     }
 
     void setMidState(bool midState) {
-        midMute = midState;
+        midSolo = midState;
     }
 
     void setSideState(bool sideState) {
-        sideMute = sideState;
+        sideSolo = sideState;
     }
 
     //void setHpfValue(float value) {
@@ -105,5 +94,13 @@ private:
     float sumMid = 0.f, sumSide = 0.f;
     juce::LinearSmoothedValue<float> rmsLevelMid, rmsLevelSide, strVal, currentHpfValue;
 
-    bool midMute = false, sideMute = false;
+    bool midSolo = false, sideSolo = false;
+
+    bool LRInputMode = true, LROutputMode = true;
+
+    float M = 0.f;
+    float S = 0.f;
+
+    float L = 0.f;
+    float R = 0.f;
 };

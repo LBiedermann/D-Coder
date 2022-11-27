@@ -19,13 +19,15 @@ DCoderAudioProcessor::DCoderAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ), apvts(*this, nullptr, "Parameters", createParameters())
 #endif
 {
+    apvts.state.addListener(this);
 }
 
 DCoderAudioProcessor::~DCoderAudioProcessor()
 {
+    apvts.state.removeListener(this);
 }
 
 //==============================================================================
@@ -95,6 +97,11 @@ void DCoderAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+
+    midSide.setSamplerate(sampleRate);
+    updateParameters();
+    reset();
+    isActive = true;
 }
 
 void DCoderAudioProcessor::releaseResources()
@@ -131,31 +138,23 @@ bool DCoderAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) c
 
 void DCoderAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
+    if (!isActive)
+        return;
+    if (mustUpdateProcessing) {
+        mustUpdateProcessing = false;
+        updateParameters();
+    }
+
     juce::ScopedNoDenormals noDenormals;
-    auto totalNumInputChannels  = getTotalNumInputChannels();
+    auto totalNumInputChannels = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
+
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
-        buffer.clear (i, 0, buffer.getNumSamples());
+        buffer.clear(i, 0, buffer.getNumSamples());
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        auto* channelData = buffer.getWritePointer (channel);
 
-        // ..do something to the data...
-    }
+    midSide.processStereoWidth(buffer);
 }
 
 //==============================================================================
@@ -176,12 +175,21 @@ void DCoderAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
+    juce::MemoryOutputStream mos(destData, true);
+    apvts.state.writeToStream(mos);
 }
 
 void DCoderAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+    auto tree = juce::ValueTree::readFromData(data, sizeInBytes);
+
+    if (tree.isValid())
+    {
+        apvts.replaceState(tree);
+        updateParameters();
+    }
 }
 
 //==============================================================================
@@ -189,4 +197,41 @@ void DCoderAudioProcessor::setStateInformation (const void* data, int sizeInByte
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new DCoderAudioProcessor();
+}
+
+void DCoderAudioProcessor::userChangedParameter()
+{
+    mustUpdateProcessing = true;
+}
+
+juce::AudioProcessorValueTreeState::ParameterLayout
+DCoderAudioProcessor::createParameters()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> parameters;
+    // Create your parameters
+    //float value returns as a string w a mx length of 4 characters
+    std::function<juce::String(float, int)> valueToTextFunction = [](float x, int l) { return juce::String(x, 2); };
+
+    //value to text function
+    std::function<float(const juce::String&)> textToValueFunction = [](const juce::String& str) {return str.getFloatValue(); };
+
+    //parameters...
+
+    return { parameters.begin(), parameters.end() };
+}
+
+void DCoderAudioProcessor::updateParameters()
+{
+
+    //midSide.setStereowidthValue(apvts.getRawParameterValue("STE"));
+    //midSide.updateCutFilter(apvts.getRawParameterValue("HPF"));
+    //bool midBtn = *apvts.getRawParameterValue("MM");
+    //bool sideBtn = *apvts.getRawParameterValue("SM");
+
+    //midSide.setMidState(midBtn);
+    //midSide.setSideState(sideBtn);
+
+}
+void DCoderAudioProcessor::reset() {
+    midSide.reset();
 }
