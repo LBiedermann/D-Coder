@@ -58,12 +58,12 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
         else {
             if (LRSwap)
             {
-                M = leftChannel[n];
-                S = rightChannel[n];
-            }
-            else {
                 S = leftChannel[n];
                 M = rightChannel[n];
+            }
+            else {
+                M = leftChannel[n];
+                S = rightChannel[n];
             }
         }
 
