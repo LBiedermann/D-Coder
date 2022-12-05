@@ -102,6 +102,11 @@ void DCoderAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock
     updateParameters();
     reset();
     isActive = true;
+
+    juce::dsp::ProcessSpec spec;
+    spec.sampleRate = sampleRate;
+    spec.maximumBlockSize = samplesPerBlock;
+    spec.numChannels = getTotalNumOutputChannels();
 }
 
 void DCoderAudioProcessor::releaseResources()
@@ -153,7 +158,7 @@ void DCoderAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce:
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear(i, 0, buffer.getNumSamples());
 
-
+    juce::dsp::AudioBlock<float> block(buffer);
     midSide.processStereoWidth(buffer);
 }
 
@@ -217,17 +222,65 @@ DCoderAudioProcessor::createParameters()
 
     //parameters...
 
-
+    //Buttons
     parameters.push_back(std::make_unique<juce::AudioParameterBool>("MS", "MidSolo", false));
     parameters.push_back(std::make_unique<juce::AudioParameterBool>("SS", "SideSolo", false));
     parameters.push_back(std::make_unique<juce::AudioParameterBool>("LRIM", "InputMode", true));
     parameters.push_back(std::make_unique<juce::AudioParameterBool>("LROM", "OutputMode", true));
     parameters.push_back(std::make_unique<juce::AudioParameterBool>("LRS", "LRSWAP", false));
 
-    //create our parameters for VOL
-    parameters.push_back(std::make_unique<juce::AudioParameterFloat >("MG", "MGain", juce::NormalisableRange<float>(-100.0f, 20.0f, 0.1f, 3.0f), 0.0f, "dB", juce::AudioProcessorParameter::genericParameter, valueToTextFunction, textToValueFunction));
-    parameters.push_back(std::make_unique<juce::AudioParameterFloat >("SG", "SGain", juce::NormalisableRange<float>(-100.0f, 20.0f, 0.1f, 3.0f), 0.0f, "dB", juce::AudioProcessorParameter::genericParameter, valueToTextFunction, textToValueFunction));
+    //END Buttons
+    //---------------------------------------------------------------------------
+    //Gain
+    parameters.push_back(std::make_unique<juce::AudioParameterFloat >("MG", "MGain", juce::NormalisableRange<float>
+        (-100.0f, 20.0f, 0.1f, 3.0f), 
+        0.0f, "dB", 
+        juce::AudioProcessorParameter::genericParameter, 
+        valueToTextFunction, textToValueFunction));
 
+    parameters.push_back(std::make_unique<juce::AudioParameterFloat >("SG", "SGain", juce::NormalisableRange<float>
+        (-100.0f, 20.0f, 0.1f, 3.0f), 
+        0.0f, "dB", 
+        juce::AudioProcessorParameter::genericParameter,
+        valueToTextFunction, textToValueFunction));
+
+    //END Gain
+    //---------------------------------------------------------------------------
+    //Filter
+
+    parameters.push_back(std::make_unique<juce::AudioParameterFloat >("LCFreq",
+        "LowCutFreq",
+        juce::NormalisableRange<float>(20.0f, 20000.0f, 1.0f,0.3f),
+        20.f, "Hz",
+        juce::AudioProcessorParameter::genericParameter,
+        valueToTextFunction, textToValueFunction));
+
+    parameters.push_back(std::make_unique<juce::AudioParameterFloat >("HCFreq",
+        "HighCutFreq",
+        juce::NormalisableRange<float>(20.0f, 20000.0f, 1.0f, 0.3f),
+        20000.f, "Hz",
+        juce::AudioProcessorParameter::genericParameter,
+        valueToTextFunction, textToValueFunction));
+
+
+    //END Filter
+    //---------------------------------------------------------------------------
+    //EQ
+
+    parameters.push_back(std::make_unique<juce::AudioParameterFloat>(
+        "PFreq",
+        "PeakFreq",
+        juce::NormalisableRange<float>(20.0f, 20000.f, 1.f, 0.25f), 1000.f));
+
+    parameters.push_back(std::make_unique<juce::AudioParameterFloat>(
+        "PGain",
+        "PeakGain",
+        juce::NormalisableRange<float>(-16.f, 16.f, 0.5f, 1.f), 0.0f));
+
+    parameters.push_back(std::make_unique<juce::AudioParameterFloat>(
+        "PQuality",
+        "PeakQuality",
+        juce::NormalisableRange<float>(0.1f, 10.f, 0.05f, 1.f), 1.f));
 
     return { parameters.begin(), parameters.end() };
 }
@@ -235,29 +288,38 @@ DCoderAudioProcessor::createParameters()
 void DCoderAudioProcessor::updateParameters()
 {
 
-    //midSide.setStereowidthValue(apvts.getRawParameterValue("STE"));
-    //midSide.updateCutFilter(apvts.getRawParameterValue("HPF"));
+
     bool midBtn = *apvts.getRawParameterValue("MS");
     bool sideBtn = *apvts.getRawParameterValue("SS");
-
-    bool LRInputModeBtn = *apvts.getRawParameterValue("LRIM");
-    bool LROutputModeBtn = *apvts.getRawParameterValue("LROM");
-
-    bool LRSwapBtn = *apvts.getRawParameterValue("LRS");
-
-    float mGainSld = *apvts.getRawParameterValue("MG");
-    float sGainSld = *apvts.getRawParameterValue("SG");
-
     midSide.setMidState(midBtn);
     midSide.setSideState(sideBtn);
 
+    bool LRInputModeBtn = *apvts.getRawParameterValue("LRIM");
+    bool LROutputModeBtn = *apvts.getRawParameterValue("LROM");
+    bool LRSwapBtn = *apvts.getRawParameterValue("LRS");
     midSide.setInputState(LRInputModeBtn);
-
     midSide.setOutputState(LROutputModeBtn);
     midSide.setSwapState(LRSwapBtn);
 
+    float mGainSld = *apvts.getRawParameterValue("MG");
+    float sGainSld = *apvts.getRawParameterValue("SG");
     midSide.setMidGain(mGainSld);
     midSide.setSideGain(sGainSld);
+
+    float lCutFilterSld = *apvts.getRawParameterValue("LCFreq");
+    float hCutFilterSld = *apvts.getRawParameterValue("HCFreq");
+    midSide.updateLowCutFilter(lCutFilterSld);
+    midSide.updateHighCutFilter(hCutFilterSld);
+
+    float peakFreqSld = *apvts.getRawParameterValue("PFreq");
+    float peakGainSld = *apvts.getRawParameterValue("PGain");
+    float peakQSld = *apvts.getRawParameterValue("PQuality");
+    midSide.updatePeakFilter(peakFreqSld, peakGainSld, peakQSld);
+
+
+
+
+
 }
 void DCoderAudioProcessor::reset() {
     midSide.reset();

@@ -69,9 +69,6 @@ public:
     juce::AudioProcessorValueTreeState apvts;
     juce::AudioProcessorValueTreeState::ParameterLayout createParameters();
 
-    MidSide getMidSide() {
-        return midSide;
-    }
 
 private:
 

@@ -13,6 +13,7 @@
 void MidSide::midSideEncode() {
     M = 0.707f * (L + R);
     S = 0.707f * (L - R);
+    S = S;
 }
 
 void MidSide::midSideDecode() {
@@ -72,12 +73,15 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
             //sideSolo = false; //muss im Editor noch angepasst werden
         }
         else {
+            
+            //EQ
+            S = peakFilter.processSample(S);
+            //Filter
+            S = lowCutFilter.processSample(S);
+            S = highCutFilter.processSample(S);
+
             //Gain
             S *= gSide;
-            //EQ
-
-            //iirFilter.processSamples(&S, 1);
-
 
             //store Sum for RMS
             sumSide += S * S;
@@ -125,8 +129,12 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
             rightChannel[n] = S;
         }
 
+        lowCutFilter.snapToZero();
+        highCutFilter.snapToZero();
+        peakFilter.snapToZero();
     }
 
+    
     //calcRMSLevel(N);
 }
 
