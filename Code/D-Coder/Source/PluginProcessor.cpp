@@ -107,6 +107,8 @@ void DCoderAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock
     spec.sampleRate = sampleRate;
     spec.maximumBlockSize = samplesPerBlock;
     spec.numChannels = getTotalNumOutputChannels();
+
+    midSide.setSpec(spec);
 }
 
 void DCoderAudioProcessor::releaseResources()
@@ -158,7 +160,7 @@ void DCoderAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce:
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear(i, 0, buffer.getNumSamples());
 
-    juce::dsp::AudioBlock<float> block(buffer);
+    //juce::dsp::AudioBlock<float> block(buffer);
     midSide.processStereoWidth(buffer);
 }
 
@@ -282,13 +284,35 @@ DCoderAudioProcessor::createParameters()
         "PeakQuality",
         juce::NormalisableRange<float>(0.1f, 10.f, 0.05f, 1.f), 1.f));
 
+    //END EQ
+    //---------------------------------------------------------------------------
+    //Compressor
+
+    parameters.push_back(std::make_unique<juce::AudioParameterFloat>(
+        "Threshold",
+        "Threshold",
+        juce::NormalisableRange<float>(-40.0f, 10.f, 0.5f, 0.25f), 0.f));
+
+    parameters.push_back(std::make_unique<juce::AudioParameterFloat>(
+        "Ratio",
+        "Ratio",
+        juce::NormalisableRange<float>(1.f, 10.f, 1.f, 1.f), 1.0f));
+
+    parameters.push_back(std::make_unique<juce::AudioParameterFloat>(
+        "Attack",
+        "Attack",
+        juce::NormalisableRange<float>(1.f, 1000.f, 1.f, 0.5f), 10.f));
+
+    parameters.push_back(std::make_unique<juce::AudioParameterFloat>(
+        "Release",
+        "Release",
+        juce::NormalisableRange<float>(5.f, 2000.f, 1.f, 0.5f), 1.f));
+
     return { parameters.begin(), parameters.end() };
 }
 
 void DCoderAudioProcessor::updateParameters()
 {
-
-
     bool midBtn = *apvts.getRawParameterValue("MS");
     bool sideBtn = *apvts.getRawParameterValue("SS");
     midSide.setMidState(midBtn);
@@ -316,8 +340,11 @@ void DCoderAudioProcessor::updateParameters()
     float peakQSld = *apvts.getRawParameterValue("PQuality");
     midSide.updatePeakFilter(peakFreqSld, peakGainSld, peakQSld);
 
-
-
+    float thresholdSld = *apvts.getRawParameterValue("Threshold");
+    float ratioSld = *apvts.getRawParameterValue("Ratio");
+    float attackSld = *apvts.getRawParameterValue("Attack");
+    float releaseSld = *apvts.getRawParameterValue("Release");
+    midSide.updateCompressor(thresholdSld, ratioSld, attackSld,releaseSld);
 
 
 }

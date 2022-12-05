@@ -97,9 +97,11 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
             //midSolo = false;
         }
         else {
+            //Compressor
+            M = compressor.processSample(1, std::abs(M));
+
             //Gain
             M *= gMid;
-            //Compressor
 
             //store Sum for RMS
             sumMid += M * M;

@@ -34,6 +34,13 @@ public:
         peakFilter = juce::dsp::IIR::Coefficients<float>::makePeakFilter(sampleRate, newFreq, newQ, juce::Decibels::decibelsToGain(newGain));
     }
 
+    void updateCompressor(float newThreshhold, float newRatio, float newAttack, float newRelease){
+        compressor.setThreshold(newThreshhold);
+        compressor.setRatio(newRatio);
+        compressor.setAttack(newRelease);
+        compressor.setRelease(newRelease);
+    }
+
     void reset() {
 
         rmsLevelMid.reset(sampleRate, 0.5);
@@ -47,11 +54,22 @@ public:
 
         midGain.reset(sampleRate, 0.00005);
         sideGain.reset(sampleRate, 0.00005);
+
+        lowCutFilter.reset();
+        highCutFilter.reset();
+        peakFilter.reset();
+
+        compressor.reset();
     }
     void setSamplerate(double newSamplerate) {
         sampleRate = newSamplerate;
     }
-
+    void setSpec(juce::dsp::ProcessSpec newSpec) {
+        compressor.prepare(newSpec);
+        lowCutFilter.prepare(newSpec);
+        highCutFilter.prepare(newSpec);
+        peakFilter.prepare(newSpec);
+    }
 
     void calcRMSLevel(int N);
 
@@ -115,4 +133,6 @@ private:
     juce::LinearSmoothedValue<float> sideGain = 0.0;
 
     juce::dsp::IIR::Filter<float> highCutFilter, lowCutFilter, peakFilter;
+
+    juce::dsp::Compressor<float> compressor;
 };
