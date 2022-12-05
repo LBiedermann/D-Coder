@@ -48,6 +48,9 @@ public:
 
         strVal.reset(sampleRate, 0.005);
         currentHpfValue.reset(sampleRate, 0.005);
+
+        midGain.reset(sampleRate, 0.00005);
+        sideGain.reset(sampleRate, 0.00005);
     }
     void setSamplerate(double newSamplerate) {
         sampleRate = newSamplerate;
@@ -83,6 +86,13 @@ public:
     void setSwapState(bool swapState) {
         LRSwap = swapState;
     }
+
+    void setMidGain(float mGain) {
+        midGain.setTargetValue(juce::Decibels::decibelsToGain(mGain));
+    }
+    void setSideGain(float sGain) {
+        sideGain.setTargetValue(juce::Decibels::decibelsToGain(sGain));
+    }
     //void setHpfValue(float value) {
 
 
@@ -115,4 +125,7 @@ private:
 
     float L = 0.f;
     float R = 0.f;
+
+    juce::LinearSmoothedValue<float> midGain = 0.0;
+    juce::LinearSmoothedValue<float> sideGain = 0.0;
 };

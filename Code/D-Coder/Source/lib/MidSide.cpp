@@ -28,7 +28,9 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
     float* leftChannel = buffer.getWritePointer(0);
     float* rightChannel = buffer.getWritePointer(1);
     int N = buffer.getNumSamples();
-    //processStereoWidth(leftChannel, rightChannel, N);
+    float gMid = midGain.getNextValue();
+    float gSide = sideGain.getNextValue();
+    
 
     sumMid = 0.f;
     sumSide = 0.f;
@@ -64,9 +66,14 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
         //---------------------------------------------------
         //SIDE Processing
         //---------------------------------------------------
-        if (midSolo)
+        if (midSolo && !sideSolo)
+        {
             S = 0.f;
+            //sideSolo = false; //muss im Editor noch angepasst werden
+        }
         else {
+            //Gain
+            S *= gSide;
             //EQ
 
             //iirFilter.processSamples(&S, 1);
@@ -80,10 +87,14 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
         //---------------------------------------------------
         //MID Processing
         //---------------------------------------------------
-        if (sideSolo)
+        if (sideSolo && !midSolo)
+        {
             M = 0.f;
+            //midSolo = false;
+        }
         else {
-
+            //Gain
+            M *= gMid;
             //Compressor
 
             //store Sum for RMS

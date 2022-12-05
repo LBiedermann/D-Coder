@@ -224,6 +224,11 @@ DCoderAudioProcessor::createParameters()
     parameters.push_back(std::make_unique<juce::AudioParameterBool>("LROM", "OutputMode", true));
     parameters.push_back(std::make_unique<juce::AudioParameterBool>("LRS", "LRSWAP", false));
 
+    //create our parameters for VOL
+    parameters.push_back(std::make_unique<juce::AudioParameterFloat >("MG", "MGain", juce::NormalisableRange<float>(-100.0f, 20.0f, 0.1f, 3.0f), 0.0f, "dB", juce::AudioProcessorParameter::genericParameter, valueToTextFunction, textToValueFunction));
+    parameters.push_back(std::make_unique<juce::AudioParameterFloat >("SG", "SGain", juce::NormalisableRange<float>(-100.0f, 20.0f, 0.1f, 3.0f), 0.0f, "dB", juce::AudioProcessorParameter::genericParameter, valueToTextFunction, textToValueFunction));
+
+
     return { parameters.begin(), parameters.end() };
 }
 
@@ -234,15 +239,25 @@ void DCoderAudioProcessor::updateParameters()
     //midSide.updateCutFilter(apvts.getRawParameterValue("HPF"));
     bool midBtn = *apvts.getRawParameterValue("MS");
     bool sideBtn = *apvts.getRawParameterValue("SS");
+
     bool LRInputModeBtn = *apvts.getRawParameterValue("LRIM");
     bool LROutputModeBtn = *apvts.getRawParameterValue("LROM");
+
     bool LRSwapBtn = *apvts.getRawParameterValue("LRS");
+
+    float mGainSld = *apvts.getRawParameterValue("MG");
+    float sGainSld = *apvts.getRawParameterValue("SG");
 
     midSide.setMidState(midBtn);
     midSide.setSideState(sideBtn);
+
     midSide.setInputState(LRInputModeBtn);
+
     midSide.setOutputState(LROutputModeBtn);
     midSide.setSwapState(LRSwapBtn);
+
+    midSide.setMidGain(mGainSld);
+    midSide.setSideGain(sGainSld);
 }
 void DCoderAudioProcessor::reset() {
     midSide.reset();
