@@ -98,7 +98,11 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
         }
         else {
             //Compressor
-            M = compressor.processSample(1, std::abs(M));
+            if (!isnan(M) && !isinf(M) ) {
+                M = compressor.processSample(0, M);//std::abs(M));
+                //compressor.process
+            }
+
 
             //Gain
             M *= gMid;

@@ -106,7 +106,7 @@ void DCoderAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock
     juce::dsp::ProcessSpec spec;
     spec.sampleRate = sampleRate;
     spec.maximumBlockSize = samplesPerBlock;
-    spec.numChannels = getTotalNumOutputChannels();
+    spec.numChannels = 1;
 
     midSide.setSpec(spec);
 }
