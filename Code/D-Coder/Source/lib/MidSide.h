@@ -23,12 +23,17 @@ public:
     void midSideEncode();
     void midSideDecode();
 
-
-    void updateLowCutFilter(float newFrequency) {
-        lowCutFilter = juce::dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, newFrequency);
+    void setLCFilter(std::atomic<float>* newFreq) {
+        currentLCValue.setTargetValue(newFreq->load());
     }
-    void updateHighCutFilter(float newFrequency) {
-        highCutFilter = juce::dsp::IIR::Coefficients<float>::makeLowPass(sampleRate, newFrequency);
+    void setHCFilter(std::atomic<float>* newFreq) {
+        currentHCValue.setTargetValue(newFreq->load());
+    }
+    void updateLowCutFilter() {
+        lowCutFilter = juce::dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, currentLCValue.getNextValue());
+    }
+    void updateHighCutFilter() {
+        highCutFilter = juce::dsp::IIR::Coefficients<float>::makeLowPass(sampleRate, currentHCValue.getNextValue());
     }
     void updatePeakFilter(float newFreq, float newGain, float newQ) {
         peakFilter = juce::dsp::IIR::Coefficients<float>::makePeakFilter(sampleRate, newFreq, newQ, juce::Decibels::decibelsToGain(newGain));
@@ -37,7 +42,7 @@ public:
     void updateCompressor(float newThreshhold, float newRatio, float newAttack, float newRelease){
         compressor.setThreshold(newThreshhold);
         compressor.setRatio(newRatio);
-        compressor.setAttack(newRelease);
+        compressor.setAttack(newAttack);
         compressor.setRelease(newRelease);
     }
 
@@ -58,6 +63,10 @@ public:
         lowCutFilter.reset();
         highCutFilter.reset();
         peakFilter.reset();
+
+        currentLCValue.reset(sampleRate, 0.0005);
+        currentHCValue.reset(sampleRate, 0.0005);
+
 
         compressor.reset();
     }
@@ -135,4 +144,7 @@ private:
     juce::dsp::IIR::Filter<float> highCutFilter, lowCutFilter, peakFilter;
 
     juce::dsp::Compressor<float> compressor;
+
+    juce::LinearSmoothedValue<float> currentLCValue = 20.f;
+    juce::LinearSmoothedValue<float> currentHCValue = 20000.f;
 };

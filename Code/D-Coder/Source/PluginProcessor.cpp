@@ -306,7 +306,7 @@ DCoderAudioProcessor::createParameters()
     parameters.push_back(std::make_unique<juce::AudioParameterFloat>(
         "Release",
         "Release",
-        juce::NormalisableRange<float>(5.f, 2000.f, 1.f, 0.5f), 1.f));
+        juce::NormalisableRange<float>(5.f, 2000.f, 1.f, 1.f), 10.f));
 
     return { parameters.begin(), parameters.end() };
 }
@@ -330,10 +330,10 @@ void DCoderAudioProcessor::updateParameters()
     midSide.setMidGain(mGainSld);
     midSide.setSideGain(sGainSld);
 
-    float lCutFilterSld = *apvts.getRawParameterValue("LCFreq");
-    float hCutFilterSld = *apvts.getRawParameterValue("HCFreq");
-    midSide.updateLowCutFilter(lCutFilterSld);
-    midSide.updateHighCutFilter(hCutFilterSld);
+    //float lCutFilterSld = *apvts.getRawParameterValue("LCFreq");
+    //float hCutFilterSld = *apvts.getRawParameterValue("HCFreq");
+    midSide.setLCFilter(apvts.getRawParameterValue("LCFreq"));
+    midSide.setHCFilter(apvts.getRawParameterValue("HCFreq"));
 
     float peakFreqSld = *apvts.getRawParameterValue("PFreq");
     float peakGainSld = *apvts.getRawParameterValue("PGain");

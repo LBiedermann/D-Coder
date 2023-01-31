@@ -77,7 +77,16 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
             //EQ
             S = peakFilter.processSample(S);
             //Filter
+            if (currentLCValue.isSmoothing()) {
+                DBG(currentLCValue.getCurrentValue());
+                updateLowCutFilter();
+
+            }
             S = lowCutFilter.processSample(S);
+
+            if (currentHCValue.isSmoothing()) {
+                updateHighCutFilter();
+            }
             S = highCutFilter.processSample(S);
 
             //Gain
