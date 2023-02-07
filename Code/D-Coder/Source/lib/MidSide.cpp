@@ -177,4 +177,6 @@ void MidSide::calcRMSLevel(int N) {
             rmsLevelSide.setCurrentAndTargetValue(sideValue);
     }
 
+
+
 }

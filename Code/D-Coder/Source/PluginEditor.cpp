@@ -106,7 +106,7 @@ void DCoderAudioProcessorEditor::addButtons() {
     inBtn.setBounds(1147, 34, 68, 89);
     addAndMakeVisible(inBtn);
     inBtn.setClickingTogglesState(true);
-    inBtn.setImages(true, false, false, inImage, 1.0f, {}, inImage, 1.0f, {}, inLightImage, 1.0f, {}, {});
+    inBtn.setImages(true, false, false, inLightImage, 1.0f, {}, inLightImage, 1.0f, {}, inImage, 1.0f, {}, {});
     inBtn.setMouseCursor(MouseCursor::PointingHandCursor);
     audioProcessor.midSide.setInputState(&inBtn);
     inAttachment = std::make_unique<AudioProcessorValueTreeState::ButtonAttachment>(audioProcessor.apvts, "LRIM", inBtn);
@@ -119,7 +119,7 @@ void DCoderAudioProcessorEditor::addButtons() {
     outBtn.setBounds(1144, 165, 64, 51);
     addAndMakeVisible(outBtn);
     outBtn.setClickingTogglesState(true);
-    outBtn.setImages(true, false, false, outImage, 1.0f, {}, outImage, 1.0f, {}, outLightImage, 1.0f, {}, {});
+    outBtn.setImages(true, false, false, outLightImage, 1.0f, {}, outLightImage, 1.0f, {}, outImage, 1.0f, {}, {});
     outBtn.setMouseCursor(MouseCursor::PointingHandCursor);
     audioProcessor.midSide.setOutputState(&outBtn);
     outAttachment = std::make_unique<AudioProcessorValueTreeState::ButtonAttachment>(audioProcessor.apvts, "LROM", outBtn);
