@@ -3,8 +3,69 @@
 <JUCERPROJECT id="XtJfcM" name="D-Coder" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
   <MAINGROUP id="fS6DbE" name="D-Coder">
+    <GROUP id="{E63CD761-D430-698E-4573-E0A0F9E84A67}" name="BinaryData">
+      <GROUP id="{F04B5D21-1284-5D99-49E2-267788F15163}" name="Buttons">
+        <FILE id="W8fwrT" name="in_btn.png" compile="0" resource="1" file="BinaryData/Buttons/in_btn.png"/>
+        <FILE id="djQYoa" name="in_light_btn.png" compile="0" resource="1"
+              file="BinaryData/Buttons/in_light_btn.png"/>
+        <FILE id="ONSjQa" name="midSolo_light_btn.png" compile="0" resource="1"
+              file="BinaryData/Buttons/midSolo_light_btn.png"/>
+        <FILE id="iG2w4z" name="midSolo_btn.png" compile="0" resource="1" file="BinaryData/Buttons/midSolo_btn.png"/>
+        <FILE id="k3Dzqf" name="out_btn.png" compile="0" resource="1" file="BinaryData/Buttons/out_btn.png"/>
+        <FILE id="vVJucF" name="out_light_btn.png" compile="0" resource="1"
+              file="BinaryData/Buttons/out_light_btn.png"/>
+        <FILE id="EQIG5z" name="sideSolo_btn.png" compile="0" resource="1"
+              file="BinaryData/Buttons/sideSolo_btn.png"/>
+        <FILE id="T0Btj5" name="sideSolo_light_btn.png" compile="0" resource="1"
+              file="BinaryData/Buttons/sideSolo_light_btn.png"/>
+        <FILE id="Qb0evu" name="swap.png" compile="0" resource="1" file="BinaryData/Buttons/swap.png"/>
+        <FILE id="rgWeF2" name="swapLight.png" compile="0" resource="1" file="BinaryData/Buttons/swapLight.png"/>
+      </GROUP>
+      <GROUP id="{79353B1F-54AC-9E2F-8B81-0DA63CB76470}" name="Mid">
+        <FILE id="MjbnfL" name="ratio_strip_v2.png" compile="0" resource="1"
+              file="BinaryData/Mid/ratio_strip_v2.png"/>
+        <FILE id="PKUzgC" name="release_strip.png" compile="0" resource="1"
+              file="BinaryData/Mid/release_strip.png"/>
+        <FILE id="hqNjRo" name="threshold_strip.png" compile="0" resource="1"
+              file="BinaryData/Mid/threshold_strip.png"/>
+        <FILE id="MRiS8S" name="attack_strip.png" compile="0" resource="1"
+              file="BinaryData/Mid/attack_strip.png"/>
+        <FILE id="sI9K6r" name="midGain_strip.png" compile="0" resource="1"
+              file="BinaryData/Mid/midGain_strip.png"/>
+      </GROUP>
+      <GROUP id="{40CCB2C6-7A00-EEDE-4F6C-ACD4F5C42BD6}" name="Side">
+        <FILE id="HZfcxl" name="eqMidGain_strip.png" compile="0" resource="1"
+              file="BinaryData/Side/eqMidGain_strip.png"/>
+        <FILE id="otqO1S" name="sideGain_strip.png" compile="0" resource="1"
+              file="BinaryData/Side/sideGain_strip.png"/>
+        <FILE id="gldDWM" name="eqMidQ_strip.png" compile="0" resource="1"
+              file="BinaryData/Side/eqMidQ_strip.png"/>
+        <FILE id="DRoz1i" name="highCut_strip.png" compile="0" resource="1"
+              file="BinaryData/Side/highCut_strip.png"/>
+        <FILE id="HTnCsH" name="eqMidFreq_strip.png" compile="0" resource="1"
+              file="BinaryData/Side/eqMidFreq_strip.png"/>
+        <FILE id="dZBcMG" name="lowCut_strip.png" compile="0" resource="1"
+              file="BinaryData/Side/lowCut_strip.png"/>
+      </GROUP>
+      <GROUP id="{2307FEEE-AC34-9A44-0999-8544EAE731DF}" name="Lables">
+        <FILE id="HtFk3V" name="lines_lables.png" compile="0" resource="1"
+              file="BinaryData/Lables/lines_lables.png"/>
+        <FILE id="jnnkgh" name="mid_lables.png" compile="0" resource="1" file="BinaryData/Lables/mid_lables.png"/>
+        <FILE id="tbMbp2" name="general_lables.png" compile="0" resource="1"
+              file="BinaryData/Lables/general_lables.png"/>
+        <FILE id="C5J7yg" name="side_lables.png" compile="0" resource="1" file="BinaryData/Lables/side_lables.png"/>
+      </GROUP>
+      <FILE id="LcRlVb" name="render.png" compile="0" resource="1" file="../../../../SAE/Bachelor/CMN630x/Blender/Renders/render.png"/>
+      <FILE id="Cd3sp6" name="grill_withoutWorld.png" compile="0" resource="1"
+            file="BinaryData/grill_withoutWorld.png"/>
+      <FILE id="IdogOj" name="Background_raw.png" compile="0" resource="1"
+            file="BinaryData/Background_raw.png"/>
+      <FILE id="mGBkge" name="grill.png" compile="0" resource="1" file="BinaryData/grill.png"/>
+      <FILE id="QabOei" name="Back_plate.png" compile="0" resource="1" file="../../../../SAE/Bachelor/CMN630x/Blender/Renders/Back_plate.png"/>
+    </GROUP>
     <GROUP id="{F70A992D-E66A-2761-F769-1CC5A77D6900}" name="Source">
       <GROUP id="{5F2D2622-B8EA-B8BB-98E3-D7CD0FA73421}" name="lib">
+        <FILE id="tMtMJV" name="LargeKnob.h" compile="0" resource="0" file="Source/lib/LargeKnob.h"/>
         <FILE id="vaevZ8" name="MidSide.cpp" compile="1" resource="0" file="Source/lib/MidSide.cpp"/>
         <FILE id="tZE9c7" name="MidSide.h" compile="0" resource="0" file="Source/lib/MidSide.h"/>
         <FILE id="LRr9Fy" name="VerticalGradientMeter.cpp" compile="1" resource="0"

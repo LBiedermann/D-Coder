@@ -12,14 +12,14 @@
 //==============================================================================
 DCoderAudioProcessor::DCoderAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
-     : AudioProcessor (BusesProperties()
-                     #if ! JucePlugin_IsMidiEffect
-                      #if ! JucePlugin_IsSynth
-                       .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
-                      #endif
-                       .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
-                     #endif
-                       ), apvts(*this, nullptr, "Parameters", createParameters())
+    : AudioProcessor(BusesProperties()
+#if ! JucePlugin_IsMidiEffect
+#if ! JucePlugin_IsSynth
+        .withInput("Input", juce::AudioChannelSet::stereo(), true)
+#endif
+        .withOutput("Output", juce::AudioChannelSet::stereo(), true)
+#endif
+    ), apvts(*this, nullptr, "Parameters", createParameters())
 #endif
 {
     apvts.state.addListener(this);
@@ -38,29 +38,29 @@ const juce::String DCoderAudioProcessor::getName() const
 
 bool DCoderAudioProcessor::acceptsMidi() const
 {
-   #if JucePlugin_WantsMidiInput
+#if JucePlugin_WantsMidiInput
     return true;
-   #else
+#else
     return false;
-   #endif
+#endif
 }
 
 bool DCoderAudioProcessor::producesMidi() const
 {
-   #if JucePlugin_ProducesMidiOutput
+#if JucePlugin_ProducesMidiOutput
     return true;
-   #else
+#else
     return false;
-   #endif
+#endif
 }
 
 bool DCoderAudioProcessor::isMidiEffect() const
 {
-   #if JucePlugin_IsMidiEffect
+#if JucePlugin_IsMidiEffect
     return true;
-   #else
+#else
     return false;
-   #endif
+#endif
 }
 
 double DCoderAudioProcessor::getTailLengthSeconds() const
@@ -79,21 +79,21 @@ int DCoderAudioProcessor::getCurrentProgram()
     return 0;
 }
 
-void DCoderAudioProcessor::setCurrentProgram (int index)
+void DCoderAudioProcessor::setCurrentProgram(int index)
 {
 }
 
-const juce::String DCoderAudioProcessor::getProgramName (int index)
+const juce::String DCoderAudioProcessor::getProgramName(int index)
 {
     return {};
 }
 
-void DCoderAudioProcessor::changeProgramName (int index, const juce::String& newName)
+void DCoderAudioProcessor::changeProgramName(int index, const juce::String& newName)
 {
 }
 
 //==============================================================================
-void DCoderAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void DCoderAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
@@ -118,32 +118,32 @@ void DCoderAudioProcessor::releaseResources()
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
-bool DCoderAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+bool DCoderAudioProcessor::isBusesLayoutSupported(const BusesLayout& layouts) const
 {
-  #if JucePlugin_IsMidiEffect
-    juce::ignoreUnused (layouts);
+#if JucePlugin_IsMidiEffect
+    juce::ignoreUnused(layouts);
     return true;
-  #else
+#else
     // This is the place where you check if the layout is supported.
     // In this template code we only support mono or stereo.
     // Some plugin hosts, such as certain GarageBand versions, will only
     // load plugins that support stereo bus layouts.
     if (layouts.getMainOutputChannelSet() != juce::AudioChannelSet::mono()
-     && layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo())
+        && layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo())
         return false;
 
     // This checks if the input layout matches the output layout
-   #if ! JucePlugin_IsSynth
+#if ! JucePlugin_IsSynth
     if (layouts.getMainOutputChannelSet() != layouts.getMainInputChannelSet())
         return false;
-   #endif
+#endif
 
     return true;
-  #endif
+#endif
 }
 #endif
 
-void DCoderAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
+void DCoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     if (!isActive)
         return;
@@ -172,12 +172,12 @@ bool DCoderAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* DCoderAudioProcessor::createEditor()
 {
-    //return new DCoderAudioProcessorEditor (*this);
-    return new juce::GenericAudioProcessorEditor(*this);
+    return new DCoderAudioProcessorEditor (*this);
+    //return new juce::GenericAudioProcessorEditor(*this);
 }
 
 //==============================================================================
-void DCoderAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
+void DCoderAudioProcessor::getStateInformation(juce::MemoryBlock& destData)
 {
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
@@ -186,7 +186,7 @@ void DCoderAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
     apvts.state.writeToStream(mos);
 }
 
-void DCoderAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+void DCoderAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
@@ -235,14 +235,14 @@ DCoderAudioProcessor::createParameters()
     //---------------------------------------------------------------------------
     //Gain
     parameters.push_back(std::make_unique<juce::AudioParameterFloat >("MG", "MGain", juce::NormalisableRange<float>
-        (-100.0f, 20.0f, 0.1f, 3.0f), 
-        0.0f, "dB", 
-        juce::AudioProcessorParameter::genericParameter, 
+        (-100.0f, 20.0f, 0.1f, 1.f),
+        0.0f, "dB",
+        juce::AudioProcessorParameter::genericParameter,
         valueToTextFunction, textToValueFunction));
 
     parameters.push_back(std::make_unique<juce::AudioParameterFloat >("SG", "SGain", juce::NormalisableRange<float>
-        (-100.0f, 20.0f, 0.1f, 3.0f), 
-        0.0f, "dB", 
+        (-100.0f, 20.0f, 0.1f, 1.0f),
+        0.0f, "dB",
         juce::AudioProcessorParameter::genericParameter,
         valueToTextFunction, textToValueFunction));
 
@@ -252,14 +252,14 @@ DCoderAudioProcessor::createParameters()
 
     parameters.push_back(std::make_unique<juce::AudioParameterFloat >("LCFreq",
         "LowCutFreq",
-        juce::NormalisableRange<float>(20.0f, 20000.0f, 1.0f,0.3f),
+        juce::NormalisableRange<float>(20.0f, 10000.0f, 1.0f, 0.3f),
         20.f, "Hz",
         juce::AudioProcessorParameter::genericParameter,
         valueToTextFunction, textToValueFunction));
 
     parameters.push_back(std::make_unique<juce::AudioParameterFloat >("HCFreq",
         "HighCutFreq",
-        juce::NormalisableRange<float>(20.0f, 20000.0f, 1.0f, 0.3f),
+        juce::NormalisableRange<float>(1000.0f, 20000.0f, 1.0f, 0.3f),
         20000.f, "Hz",
         juce::AudioProcessorParameter::genericParameter,
         valueToTextFunction, textToValueFunction));
@@ -272,17 +272,17 @@ DCoderAudioProcessor::createParameters()
     parameters.push_back(std::make_unique<juce::AudioParameterFloat>(
         "PFreq",
         "PeakFreq",
-        juce::NormalisableRange<float>(20.0f, 20000.f, 1.f, 0.25f), 1000.f));
+        juce::NormalisableRange<float>(100.0f, 15000.f, 1.f, 0.25f), 1500.f));
 
     parameters.push_back(std::make_unique<juce::AudioParameterFloat>(
         "PGain",
         "PeakGain",
-        juce::NormalisableRange<float>(-16.f, 16.f, 0.5f, 1.f), 0.0f));
+        juce::NormalisableRange<float>(-24.f, 24.f, 0.5f, 1.f), 0.0f));
 
     parameters.push_back(std::make_unique<juce::AudioParameterFloat>(
         "PQuality",
         "PeakQuality",
-        juce::NormalisableRange<float>(0.1f, 10.f, 0.05f, 1.f), 1.f));
+        juce::NormalisableRange<float>(0.1f, 10.f, 0.05f, 1.f), 5.f));
 
     //END EQ
     //---------------------------------------------------------------------------
@@ -291,22 +291,22 @@ DCoderAudioProcessor::createParameters()
     parameters.push_back(std::make_unique<juce::AudioParameterFloat>(
         "Threshold",
         "Threshold",
-        juce::NormalisableRange<float>(-40.0f, 10.f, 0.5f, 0.25f), 0.f));
+        juce::NormalisableRange<float>(-40.0f, 0.f, 0.5f, 1.f), 0.f));
 
     parameters.push_back(std::make_unique<juce::AudioParameterFloat>(
         "Ratio",
         "Ratio",
-        juce::NormalisableRange<float>(1.f, 10.f, 1.f, 1.f), 1.0f));
+        juce::NormalisableRange<float>(1.f, 6.f, 0.5f, 1.f), 1.0f));
 
     parameters.push_back(std::make_unique<juce::AudioParameterFloat>(
         "Attack",
         "Attack",
-        juce::NormalisableRange<float>(1.f, 1000.f, 1.f, 0.5f), 10.f));
+        juce::NormalisableRange<float>(1.f, 250.f, 0.1f, 1.f), 6.f));
 
     parameters.push_back(std::make_unique<juce::AudioParameterFloat>(
         "Release",
         "Release",
-        juce::NormalisableRange<float>(5.f, 2000.f, 1.f, 1.f), 10.f));
+        juce::NormalisableRange<float>(5.f, 750.f, 0.1f, 1.f), 15.f));
 
     return { parameters.begin(), parameters.end() };
 }
@@ -330,21 +330,23 @@ void DCoderAudioProcessor::updateParameters()
     midSide.setMidGain(mGainSld);
     midSide.setSideGain(sGainSld);
 
-    //float lCutFilterSld = *apvts.getRawParameterValue("LCFreq");
-    //float hCutFilterSld = *apvts.getRawParameterValue("HCFreq");
+
     midSide.setLCFilter(apvts.getRawParameterValue("LCFreq"));
     midSide.setHCFilter(apvts.getRawParameterValue("HCFreq"));
 
-    float peakFreqSld = *apvts.getRawParameterValue("PFreq");
-    float peakGainSld = *apvts.getRawParameterValue("PGain");
-    float peakQSld = *apvts.getRawParameterValue("PQuality");
-    midSide.updatePeakFilter(peakFreqSld, peakGainSld, peakQSld);
+
+
+    midSide.setPFFreq(apvts.getRawParameterValue("PFreq"));
+    midSide.setPFGain(apvts.getRawParameterValue("PGain"));
+    midSide.setPFGain(apvts.getRawParameterValue("PQuality"));
+    //------------------------------------------------------
+
 
     float thresholdSld = *apvts.getRawParameterValue("Threshold");
     float ratioSld = *apvts.getRawParameterValue("Ratio");
     float attackSld = *apvts.getRawParameterValue("Attack");
     float releaseSld = *apvts.getRawParameterValue("Release");
-    midSide.updateCompressor(thresholdSld, ratioSld, attackSld,releaseSld);
+    midSide.updateCompressor(thresholdSld, ratioSld, attackSld, releaseSld);
 
 
 }

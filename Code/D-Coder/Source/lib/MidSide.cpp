@@ -31,14 +31,14 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
     int N = buffer.getNumSamples();
     float gMid = midGain.getNextValue();
     float gSide = sideGain.getNextValue();
-    
+
 
     sumMid = 0.f;
     sumSide = 0.f;
 
     for (int n = 0; n < N; n++)
     {
-        
+
         //---------------------------------------------------
         //Input
         //---------------------------------------------------
@@ -58,11 +58,13 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
             // LR --> MS
             midSideEncode();
         }
-        else 
+        else
         {
             M = leftChannel[n];
             S = rightChannel[n];
         }
+
+
 
         //---------------------------------------------------
         //SIDE Processing
@@ -73,14 +75,17 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
             //sideSolo = false; //muss im Editor noch angepasst werden
         }
         else {
-            
+
             //EQ
+            if (currentPKFreqValue.isSmoothing() || currentPKGainValue.isSmoothing() || currentPKQualValue.isSmoothing()) {
+                updatePeakFilter();
+            }
             S = peakFilter.processSample(S);
+
+
             //Filter
             if (currentLCValue.isSmoothing()) {
-                DBG(currentLCValue.getCurrentValue());
                 updateLowCutFilter();
-
             }
             S = lowCutFilter.processSample(S);
 
@@ -96,7 +101,6 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
             sumSide += S * S;
         }
 
-
         //---------------------------------------------------
         //MID Processing
         //---------------------------------------------------
@@ -107,9 +111,9 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
         }
         else {
             //Compressor
-            if (!isnan(M) && !isinf(M) ) {
+            if (!isnan(M) && !isinf(M)) {
                 M = compressor.processSample(0, M);//std::abs(M));
-                //compressor.process
+
             }
 
 
@@ -149,8 +153,8 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
         peakFilter.snapToZero();
     }
 
-    
-    //calcRMSLevel(N);
+
+    calcRMSLevel(N);
 }
 
 void MidSide::calcRMSLevel(int N) {
