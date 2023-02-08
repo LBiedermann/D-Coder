@@ -55,13 +55,11 @@
               file="BinaryData/Lables/general_lables.png"/>
         <FILE id="C5J7yg" name="side_lables.png" compile="0" resource="1" file="BinaryData/Lables/side_lables.png"/>
       </GROUP>
-      <FILE id="LcRlVb" name="render.png" compile="0" resource="1" file="../../../../SAE/Bachelor/CMN630x/Blender/Renders/render.png"/>
       <FILE id="Cd3sp6" name="grill_withoutWorld.png" compile="0" resource="1"
             file="BinaryData/grill_withoutWorld.png"/>
       <FILE id="IdogOj" name="Background_raw.png" compile="0" resource="1"
             file="BinaryData/Background_raw.png"/>
       <FILE id="mGBkge" name="grill.png" compile="0" resource="1" file="BinaryData/grill.png"/>
-      <FILE id="QabOei" name="Back_plate.png" compile="0" resource="1" file="../../../../SAE/Bachelor/CMN630x/Blender/Renders/Back_plate.png"/>
     </GROUP>
     <GROUP id="{F70A992D-E66A-2761-F769-1CC5A77D6900}" name="Source">
       <GROUP id="{5F2D2622-B8EA-B8BB-98E3-D7CD0FA73421}" name="lib">

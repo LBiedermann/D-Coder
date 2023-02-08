@@ -29,8 +29,7 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
     float* leftChannel = buffer.getWritePointer(0);
     float* rightChannel = buffer.getWritePointer(1);
     int N = buffer.getNumSamples();
-    float gMid = midGain.getNextValue();
-    float gSide = sideGain.getNextValue();
+
 
 
     sumMid = 0.f;
@@ -38,6 +37,8 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
 
     for (int n = 0; n < N; n++)
     {
+        float gMid = midGain.getNextValue();
+        float gSide = sideGain.getNextValue();
 
         //---------------------------------------------------
         //Input
@@ -77,21 +78,21 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
         else {
 
             //EQ
-            if (currentPKFreqValue.isSmoothing() || currentPKGainValue.isSmoothing() || currentPKQualValue.isSmoothing()) {
-                updatePeakFilter();
-            }
+//            if (currentPKFreqValue.isSmoothing() || currentPKGainValue.isSmoothing() || currentPKQualValue.isSmoothing()) {
+            updatePeakFilter();
+            //            }
             S = peakFilter.processSample(S);
 
 
             //Filter
-            if (currentLCValue.isSmoothing()) {
-                updateLowCutFilter();
-            }
+//            if (currentLCValue.isSmoothing()) {
+            updateLowCutFilter();
+            //            }
             S = lowCutFilter.processSample(S);
 
-            if (currentHCValue.isSmoothing()) {
-                updateHighCutFilter();
-            }
+            //            if (currentHCValue.isSmoothing()) {
+            updateHighCutFilter();
+            //            }
             S = highCutFilter.processSample(S);
 
             //Gain
@@ -163,20 +164,18 @@ void MidSide::calcRMSLevel(int N) {
     rmsLevelSide.skip(N);
     {
         const auto midValue = juce::Decibels::gainToDecibels(std::sqrt(sumMid / N));
-        if (midValue < rmsLevelMid.getCurrentValue())
+        //if (midValue < rmsLevelMid.getCurrentValue())
             rmsLevelMid.setTargetValue(midValue);
-        else
-            rmsLevelMid.setCurrentAndTargetValue(midValue);
+        //else
+        //    rmsLevelMid.setCurrentAndTargetValue(midValue);
     }
 
     {
         const auto sideValue = juce::Decibels::gainToDecibels(std::sqrt(sumSide / N));
-        if (sideValue < rmsLevelSide.getCurrentValue())
+        //if (sideValue < rmsLevelSide.getCurrentValue())
             rmsLevelSide.setTargetValue(sideValue);
-        else
-            rmsLevelSide.setCurrentAndTargetValue(sideValue);
+        //else
+        //    rmsLevelSide.setCurrentAndTargetValue(sideValue);
     }
-
-
 
 }

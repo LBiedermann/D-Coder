@@ -16,7 +16,7 @@
 class MidSide {
 
 public:
-    MidSide::MidSide(){};
+    MidSide() {};
     void processStereoWidth(juce::AudioBuffer<float>& buffer);
 
     void midSideEncode();
@@ -69,8 +69,8 @@ public:
 
     void reset() {
 
-        rmsLevelMid.reset(sampleRate, 0.5);
-        rmsLevelSide.reset(sampleRate, 0.5);
+        rmsLevelMid.reset(sampleRate, 0.3);
+        rmsLevelSide.reset(sampleRate, 0.3);
 
         rmsLevelMid.setCurrentAndTargetValue(-100.f);
         rmsLevelSide.setCurrentAndTargetValue(-100.f);
@@ -80,20 +80,20 @@ public:
 
         //--------------------------------------------------
         // Hier waren die werte einfach zu klein: 0.00005
-        midGain.reset(sampleRate, 0.0005);
-        sideGain.reset(sampleRate, 0.0005);
+        midGain.reset(sampleRate, 0.05);
+        sideGain.reset(sampleRate, 0.05);
         //------------------------------------------------------
 
         lowCutFilter.reset();
         highCutFilter.reset();
         peakFilter.reset();
 
-        currentLCValue.reset(sampleRate, 0.0005);
-        currentHCValue.reset(sampleRate, 0.0005);
+        currentLCValue.reset(sampleRate, 0.05);
+        currentHCValue.reset(sampleRate, 0.05);
 
-        currentPKGainValue.reset(sampleRate, 0.0005);
-        currentPKFreqValue.reset(sampleRate, 0.0005);
-        currentPKQualValue.reset(sampleRate, 0.0005);
+        currentPKGainValue.reset(sampleRate, 0.05);
+        currentPKFreqValue.reset(sampleRate, 0.05);
+        currentPKQualValue.reset(sampleRate, 0.05);
 
 
         compressor.reset();
