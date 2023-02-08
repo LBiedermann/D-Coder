@@ -23,7 +23,10 @@ public:
     void midSideDecode();
 
     void setLCFilter(std::atomic<float>* newFreq) {
-        currentLCValue.setTargetValue(newFreq->load());
+        //currentLCValue.setTargetValue(newFreq->load());
+        lowCutValue = newFreq->load();
+        updateLowCutFilter();
+        //lowCutFilter = juce::dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, currentLCValue.getNextValue());
     }
     void setHCFilter(std::atomic<float>* newFreq) {
         currentHCValue.setTargetValue(newFreq->load());
@@ -40,15 +43,16 @@ public:
         currentPKGainValue.setTargetValue(newGain->load());
     }
 
-    void setPFQuality(std::atomic<float>* newQ) {
+    void setPFQuality(std::atomic<float>* newQ) { 
         currentPKQualValue.setTargetValue(newQ->load());
     }
     //------------------------------------------------------
 
     void updateLowCutFilter() {
-        lowCutFilter = juce::dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, currentLCValue.getNextValue());
+            //lowCutFilter = juce::dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, currentLCValue.getNextValue());
+        lowCutFilter = juce::dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, lowCutValue);
     }
-
+    
     void updateHighCutFilter() {
         highCutFilter = juce::dsp::IIR::Coefficients<float>::makeLowPass(sampleRate, currentHCValue.getNextValue());
     }
@@ -88,7 +92,7 @@ public:
         highCutFilter.reset();
         peakFilter.reset();
 
-        currentLCValue.reset(sampleRate, 0.05);
+        currentLCValue.reset(sampleRate, 0.5);
         currentHCValue.reset(sampleRate, 0.05);
 
         currentPKGainValue.reset(sampleRate, 0.05);
@@ -178,7 +182,7 @@ private:
     juce::LinearSmoothedValue<float> currentLCValue = 20.f;
     juce::LinearSmoothedValue<float> currentHCValue = 20000.f;
 
-
+    float lowCutValue = 20.f;
     juce::LinearSmoothedValue<float> currentPKGainValue = 1.f;
     juce::LinearSmoothedValue<float> currentPKFreqValue = 1000.f;
     juce::LinearSmoothedValue<float> currentPKQualValue = 0.5f;

@@ -25,12 +25,16 @@ void MidSide::midSideDecode() {
 
 
 void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
-
-    float* leftChannel = buffer.getWritePointer(0);
-    float* rightChannel = buffer.getWritePointer(1);
+    juce::dsp::AudioBlock<float> block(buffer);
+    auto leftChannel = block.getSingleChannelBlock(0);
+    auto rightChannel = block.getSingleChannelBlock(1);
     int N = buffer.getNumSamples();
 
-
+    //float* leftChannel = buffer.getWritePointer(0);
+    //float* rightChannel = buffer.getWritePointer(1);
+    //int N = buffer.getNumSamples();
+    
+    
 
     sumMid = 0.f;
     sumSide = 0.f;
@@ -47,13 +51,13 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
         {
             if (LRSwap && !LROutputMode)
             {
-                R = leftChannel[n];
-                L = rightChannel[n];
+                R = leftChannel.getSample(0,n);
+                L = rightChannel.getSample(0,n);
             }
             else
             {
-                L = leftChannel[n];
-                R = rightChannel[n];
+                L = leftChannel.getSample(0, n);
+                R = rightChannel.getSample(0, n);
             }
 
             // LR --> MS
@@ -61,8 +65,8 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
         }
         else
         {
-            M = leftChannel[n];
-            S = rightChannel[n];
+            M = leftChannel.getSample(0, n);
+            S = rightChannel.getSample(0, n);
         }
 
 
@@ -85,9 +89,9 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
 
 
             //Filter
-//            if (currentLCValue.isSmoothing()) {
-            updateLowCutFilter();
-            //            }
+            //if (currentLCValue.isSmoothing()) {
+                //updateLowCutFilter();
+            //}
             S = lowCutFilter.processSample(S);
 
             //            if (currentHCValue.isSmoothing()) {
@@ -134,19 +138,19 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
             midSideDecode();
             if (LRSwap)
             {
-                leftChannel[n] = R;
-                rightChannel[n] = L;
+                leftChannel.setSample(0, n, R);
+                rightChannel.setSample(0, n, L);
             }
             else
             {
-                leftChannel[n] = L;
-                rightChannel[n] = R;
+                leftChannel.setSample(0, n, L);
+                rightChannel.setSample(0, n, R);
             }
         }
         else
         {
-            leftChannel[n] = M;
-            rightChannel[n] = S;
+            leftChannel.setSample(0, n, M);
+            rightChannel.setSample(0, n, S);
         }
 
         lowCutFilter.snapToZero();
