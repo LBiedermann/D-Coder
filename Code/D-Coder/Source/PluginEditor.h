@@ -16,10 +16,10 @@ using namespace juce;
 //==============================================================================
 /**
 */
-class DCoderAudioProcessorEditor  : public juce::AudioProcessorEditor
+class DCoderAudioProcessorEditor : public juce::AudioProcessorEditor
 {
 public:
-    DCoderAudioProcessorEditor (DCoderAudioProcessor&);
+    DCoderAudioProcessorEditor(DCoderAudioProcessor&);
     ~DCoderAudioProcessorEditor() override;
 
     //==============================================================================
@@ -56,5 +56,5 @@ private:
 
 
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DCoderAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DCoderAudioProcessorEditor)
 };

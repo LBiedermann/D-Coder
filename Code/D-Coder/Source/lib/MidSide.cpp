@@ -41,8 +41,10 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
 
     for (int n = 0; n < N; n++)
     {
+
         float gMid = midGain.getNextValue();
         float gSide = sideGain.getNextValue();
+
 
         //---------------------------------------------------
         //Input
@@ -84,21 +86,23 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
             //EQ
 //            if (currentPKFreqValue.isSmoothing() || currentPKGainValue.isSmoothing() || currentPKQualValue.isSmoothing()) {
             updatePeakFilter();
+            peakFilter.coefficients = peakFilterCoeffs;
+
             //            }
             S = peakFilter.processSample(S);
 
 
             //Filter
+//            if (currentLCValue.isSmoothing()) {
+            updateLowCutFilter();
+            lowCutFilter.coefficients = lowCutFilterCoeffs;
+            //            }
             S = lowCutFilter.processSample(S);
-            if (currentLCValue.isSmoothing()) {
-                updateLowCutFilter();
-                currentLCValue.skip(1);
-            }
-  
-           
 
             //            if (currentHCValue.isSmoothing()) {
             updateHighCutFilter();
+            highCutFilter.coefficients = highCutFilterCoeffs;
+
             //            }
             S = highCutFilter.processSample(S);
 

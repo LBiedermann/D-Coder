@@ -106,7 +106,7 @@ void DCoderAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
     juce::dsp::ProcessSpec spec;
     spec.sampleRate = sampleRate;
     spec.maximumBlockSize = samplesPerBlock;
-    spec.numChannels = 2;
+    spec.numChannels = 1;
 
     midSide.setSpec(spec);
 }
@@ -172,7 +172,7 @@ bool DCoderAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* DCoderAudioProcessor::createEditor()
 {
-    return new DCoderAudioProcessorEditor (*this);
+    return new DCoderAudioProcessorEditor(*this);
     //return new juce::GenericAudioProcessorEditor(*this);
 }
 
@@ -338,7 +338,7 @@ void DCoderAudioProcessor::updateParameters()
 
     midSide.setPFFreq(apvts.getRawParameterValue("PFreq"));
     midSide.setPFGain(apvts.getRawParameterValue("PGain"));
-    midSide.setPFGain(apvts.getRawParameterValue("PQuality"));
+    midSide.setPFQuality(apvts.getRawParameterValue("PQuality"));
     //------------------------------------------------------
 
 
