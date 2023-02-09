@@ -23,9 +23,9 @@ public:
     void midSideDecode();
 
     void setLCFilter(std::atomic<float>* newFreq) {
-        //currentLCValue.setTargetValue(newFreq->load());
+        currentLCValue.setTargetValue(newFreq->load());
         lowCutValue = newFreq->load();
-        updateLowCutFilter();
+        //updateLowCutFilter();
         //lowCutFilter = juce::dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, currentLCValue.getNextValue());
     }
     void setHCFilter(std::atomic<float>* newFreq) {
@@ -49,7 +49,7 @@ public:
     //------------------------------------------------------
 
     void updateLowCutFilter() {
-            //lowCutFilter = juce::dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, currentLCValue.getNextValue());
+         //lowCutFilter = juce::dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, currentLCValue.getNextValue());
         lowCutFilter = juce::dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, lowCutValue);
     }
     
@@ -179,7 +179,7 @@ private:
 
     juce::dsp::Compressor<float> compressor;
 
-    juce::LinearSmoothedValue<float> currentLCValue = 20.f;
+    juce::SmoothedValue<float> currentLCValue = 20.f;
     juce::LinearSmoothedValue<float> currentHCValue = 20000.f;
 
     float lowCutValue = 20.f;

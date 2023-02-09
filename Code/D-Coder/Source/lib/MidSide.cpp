@@ -89,10 +89,13 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
 
 
             //Filter
-            //if (currentLCValue.isSmoothing()) {
-                //updateLowCutFilter();
-            //}
             S = lowCutFilter.processSample(S);
+            if (currentLCValue.isSmoothing()) {
+                updateLowCutFilter();
+                currentLCValue.skip(1);
+            }
+  
+           
 
             //            if (currentHCValue.isSmoothing()) {
             updateHighCutFilter();
