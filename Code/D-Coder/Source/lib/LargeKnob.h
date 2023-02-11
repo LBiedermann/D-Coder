@@ -32,11 +32,6 @@ public:
             rotation = std::pow(rotation, customSkew); //SKEW
             const int frames = 128;
             const int frameId = (int)ceil(rotation * ((double)frames - 1.0));
-            //const float radius = jmin(width / 1.0f, height / 1.0f);
-            //const float centerX = x + width * 0.5f;
-            //const float centerY = y + height * 0.5f;
-            //const float rx = centerX - radius - 1.0f;
-            //const float ry = centerY - radius;
 
             int imgWidth = sprite.getWidth();
             int imgHeight = sprite.getHeight() / frames;

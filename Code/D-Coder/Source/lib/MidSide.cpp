@@ -22,19 +22,11 @@ void MidSide::midSideDecode() {
 }
 
 
-
-
 void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
     juce::dsp::AudioBlock<float> block(buffer);
     auto leftChannel = block.getSingleChannelBlock(0);
     auto rightChannel = block.getSingleChannelBlock(1);
     int N = buffer.getNumSamples();
-
-    //float* leftChannel = buffer.getWritePointer(0);
-    //float* rightChannel = buffer.getWritePointer(1);
-    //int N = buffer.getNumSamples();
-    
-    
 
     sumMid = 0.f;
     sumSide = 0.f;
@@ -72,38 +64,28 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
         }
 
 
-
         //---------------------------------------------------
         //SIDE Processing
         //---------------------------------------------------
         if (midSolo && !sideSolo)
         {
             S = 0.f;
-            //sideSolo = false; //muss im Editor noch angepasst werden
         }
         else {
 
-            //EQ
-//            if (currentPKFreqValue.isSmoothing() || currentPKGainValue.isSmoothing() || currentPKQualValue.isSmoothing()) {
-            updatePeakFilter();
-            peakFilter.coefficients = peakFilterCoeffs;
-
-            //            }
-            S = peakFilter.processSample(S);
-
-
-            //Filter
-//            if (currentLCValue.isSmoothing()) {
+            //LC Filter
             updateLowCutFilter();
             lowCutFilter.coefficients = lowCutFilterCoeffs;
-            //            }
             S = lowCutFilter.processSample(S);
 
-            //            if (currentHCValue.isSmoothing()) {
+            //EQ
+            updatePeakFilter();
+            peakFilter.coefficients = peakFilterCoeffs;
+            S = peakFilter.processSample(S);
+
+            //HC Filter
             updateHighCutFilter();
             highCutFilter.coefficients = highCutFilterCoeffs;
-
-            //            }
             S = highCutFilter.processSample(S);
 
             //Gain
@@ -124,10 +106,8 @@ void MidSide::processStereoWidth(juce::AudioBuffer<float>& buffer) {
         else {
             //Compressor
             if (!isnan(M) && !isinf(M)) {
-                M = compressor.processSample(0, M);//std::abs(M));
-
+                M = compressor.processSample(0, M);
             }
-
 
             //Gain
             M *= gMid;
@@ -175,18 +155,12 @@ void MidSide::calcRMSLevel(int N) {
     rmsLevelSide.skip(N);
     {
         const auto midValue = juce::Decibels::gainToDecibels(std::sqrt(sumMid / N));
-        //if (midValue < rmsLevelMid.getCurrentValue())
-            rmsLevelMid.setTargetValue(midValue);
-        //else
-        //    rmsLevelMid.setCurrentAndTargetValue(midValue);
+        rmsLevelMid.setTargetValue(midValue);
     }
 
     {
         const auto sideValue = juce::Decibels::gainToDecibels(std::sqrt(sumSide / N));
-        //if (sideValue < rmsLevelSide.getCurrentValue())
-            rmsLevelSide.setTargetValue(sideValue);
-        //else
-        //    rmsLevelSide.setCurrentAndTargetValue(sideValue);
+        rmsLevelSide.setTargetValue(sideValue);
     }
 
 }

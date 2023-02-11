@@ -30,9 +30,6 @@ public:
         currentHCValue.setTargetValue(newFreq->load());
     }
 
-
-    //--------------------------------------------------
-    //Hier die parameter von atomics laden
     void setPFFreq(std::atomic<float>* newFreq) {
         currentPKFreqValue.setTargetValue(newFreq->load());
     }
@@ -44,7 +41,6 @@ public:
     void setPFQuality(std::atomic<float>* newQ) {
         currentPKQualValue.setTargetValue(newQ->load());
     }
-    //------------------------------------------------------
 
     void updateLowCutFilter() {
         lowCutFilterCoeffs = juce::dsp::IIR::Coefficients<float>::makeHighPass(sampleRate, currentLCValue.getNextValue());
@@ -54,12 +50,9 @@ public:
         highCutFilterCoeffs = juce::dsp::IIR::Coefficients<float>::makeLowPass(sampleRate, currentHCValue.getNextValue());
     }
 
-    //--------------------------------------------------
-    //Hier die smoothed values von den currents in den peak Filter füttern, wie bei HC / LC
     void updatePeakFilter() {
         peakFilterCoeffs = juce::dsp::IIR::Coefficients<float>::makePeakFilter(sampleRate, currentPKFreqValue.getNextValue(), currentPKQualValue.getNextValue(), juce::Decibels::decibelsToGain(currentPKGainValue.getNextValue()));
     }
-    //------------------------------------------------------
 
     void updateCompressor(float newThreshhold, float newRatio, float newAttack, float newRelease) {
         compressor.setThreshold(newThreshhold);
@@ -76,14 +69,10 @@ public:
         rmsLevelMid.setCurrentAndTargetValue(-100.f);
         rmsLevelSide.setCurrentAndTargetValue(-100.f);
         sumMid = 0.f,
-            sumSide = 0.f;
+        sumSide = 0.f;
 
-
-        //--------------------------------------------------
-        // Hier waren die werte einfach zu klein: 0.00005
         midGain.reset(sampleRate, 0.0005);
         sideGain.reset(sampleRate, 0.0005);
-        //------------------------------------------------------
 
         lowCutFilter.reset();
         highCutFilter.reset();
@@ -179,14 +168,10 @@ private:
     juce::dsp::IIR::Coefficients<float>::Ptr peakFilterCoeffs;
 
 
-
-
-
     juce::dsp::Compressor<float> compressor;
 
     juce::LinearSmoothedValue<float> currentLCValue = 20.f;
     juce::LinearSmoothedValue<float> currentHCValue = 20000.f;
-
 
     juce::LinearSmoothedValue<float> currentPKGainValue = 0.f;
     juce::LinearSmoothedValue<float> currentPKFreqValue = 1000.f;
