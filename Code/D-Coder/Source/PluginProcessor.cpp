@@ -222,18 +222,22 @@ DCoderAudioProcessor::createParameters()
     //value to text function
     std::function<float(const juce::String&)> textToValueFunction = [](const juce::String& str) {return str.getFloatValue(); };
 
-    //parameters...
+    
 
+    //---------------------------------------------------------------------------
     //Buttons
+    //---------------------------------------------------------------------------
     parameters.push_back(std::make_unique<juce::AudioParameterBool>("MS", "MidSolo", false));
     parameters.push_back(std::make_unique<juce::AudioParameterBool>("SS", "SideSolo", false));
     parameters.push_back(std::make_unique<juce::AudioParameterBool>("LRIM", "InputMode", true));
     parameters.push_back(std::make_unique<juce::AudioParameterBool>("LROM", "OutputMode", true));
     parameters.push_back(std::make_unique<juce::AudioParameterBool>("LRS", "LRSWAP", false));
-
     //END Buttons
+    
+
     //---------------------------------------------------------------------------
     //Gain
+    //---------------------------------------------------------------------------
     parameters.push_back(std::make_unique<juce::AudioParameterFloat >("MG", "MGain", juce::NormalisableRange<float>
         (-100.0f, 20.0f, 0.1f, 1.f),
         0.0f, "dB",
@@ -247,9 +251,11 @@ DCoderAudioProcessor::createParameters()
         valueToTextFunction, textToValueFunction));
 
     //END Gain
+    
+
     //---------------------------------------------------------------------------
     //Filter
-
+    //---------------------------------------------------------------------------
     parameters.push_back(std::make_unique<juce::AudioParameterFloat >("LCFreq",
         "LowCutFreq",
         juce::NormalisableRange<float>(20.0f, 10000.0f, 1.0f, 0.3f),
@@ -264,10 +270,12 @@ DCoderAudioProcessor::createParameters()
         juce::AudioProcessorParameter::genericParameter,
         valueToTextFunction, textToValueFunction));
 
-
     //END Filter
+
+
     //---------------------------------------------------------------------------
     //EQ
+    //---------------------------------------------------------------------------
 
     parameters.push_back(std::make_unique<juce::AudioParameterFloat>(
         "PFreq",
@@ -285,8 +293,11 @@ DCoderAudioProcessor::createParameters()
         juce::NormalisableRange<float>(0.1f, 10.f, 0.05f, 1.f), 5.f));
 
     //END EQ
+
+    
     //---------------------------------------------------------------------------
     //Compressor
+    //---------------------------------------------------------------------------
 
     parameters.push_back(std::make_unique<juce::AudioParameterFloat>(
         "Threshold",
@@ -339,7 +350,6 @@ void DCoderAudioProcessor::updateParameters()
     midSide.setPFFreq(apvts.getRawParameterValue("PFreq"));
     midSide.setPFGain(apvts.getRawParameterValue("PGain"));
     midSide.setPFQuality(apvts.getRawParameterValue("PQuality"));
-    //------------------------------------------------------
 
 
     float thresholdSld = *apvts.getRawParameterValue("Threshold");
