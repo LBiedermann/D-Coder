@@ -160,8 +160,9 @@ void DCoderAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear(i, 0, buffer.getNumSamples());
 
-    //juce::dsp::AudioBlock<float> block(buffer);
-    midSide.processStereoWidth(buffer);
+    //if statement for logic problem
+    if(totalNumInputChannels == 2 && totalNumOutputChannels == 2)
+        midSide.processStereoWidth(buffer);
 }
 
 //==============================================================================
