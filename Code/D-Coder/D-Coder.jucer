@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="XtJfcM" name="D-Coder" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" companyName="Duke Sounds"
+              companyEmail="lukas.biedermann@protonmail.com" pluginDesc="MS-Processor"
+              pluginManufacturerCode="Dcdr" pluginManufacturer="Duke Sounds"
+              pluginCode="Dcdr" pluginChannelConfigs="2" pluginVST3Category="Mastering,Stereo,Tools"
+              pluginCharacteristicsValue="pluginAAXDisableMultiMono,pluginRTASDisableMultiMono"
+              pluginVSTCategory="kPlugCategEffect">
   <MAINGROUP id="fS6DbE" name="D-Coder">
     <GROUP id="{E63CD761-D430-698E-4573-E0A0F9E84A67}" name="BinaryData">
       <GROUP id="{F04B5D21-1284-5D99-49E2-267788F15163}" name="Buttons">
